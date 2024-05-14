@@ -45,16 +45,12 @@ async def twilio_handler(twilio_ws):
             },
         }
 
-        print("about to send the following config message:")
-        print(config_message)
         await sts_ws.send(json.dumps(config_message))
-        print("successfully send the config message")
 
         async def sts_sender(sts_ws):
             print("sts_sender started")
             while True:
                 chunk = await audio_queue.get()
-                print("got a chunk of audio to send to sts")
                 await sts_ws.send(chunk)
 
         async def sts_receiver(sts_ws):
@@ -67,7 +63,6 @@ async def twilio_handler(twilio_ws):
                     print(message)
                     continue
 
-                print("got audio from sts to send back to the phone?")
                 print(type(message))
                 raw_mulaw = message
 
@@ -114,10 +109,10 @@ async def twilio_handler(twilio_ws):
                 except:
                     break
 
-            # the async for loop will end if the ws connection from twilio dies
-            # and if this happens, we should forward an some kind of message to sts
-            # to signal sts to send back remaining messages before closing(?)
-            # audio_queue.put_nowait(b'')
+        # the async for loop will end if the ws connection from twilio dies
+        # and if this happens, we should forward an some kind of message to sts
+        # to signal sts to send back remaining messages before closing(?)
+        # audio_queue.put_nowait(b'')
 
         await asyncio.wait(
             [
