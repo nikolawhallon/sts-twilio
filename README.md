@@ -72,7 +72,6 @@ def sts_connect():
     )
 
     return sts_ws
-
 ```
 This function will help us connect to the Deepgram STS API. Make sure to insert your Deepgram API Key where it says
 "INSERT_DEEPGRAM_API_KEY" (and feel free to use environment variables, or another key management solution instead
