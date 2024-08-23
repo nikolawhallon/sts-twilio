@@ -61,6 +61,15 @@ async def twilio_handler(twilio_ws):
             async for message in sts_ws:
                 if type(message) is str:
                     print(message)
+                    # handle barge-in
+                    decoded = json.loads(message)
+                    if decoded['type'] == 'UserStartedSpeaking':
+                        clear_message = {
+                            "event": "clear",
+                            "streamSid": streamsid
+                        }
+                        await twilio_ws.send(json.dumps(clear_message))
+
                     continue
 
                 print(type(message))

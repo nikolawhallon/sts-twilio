@@ -18,6 +18,10 @@ There are a couple of key differences between this server (sts-twilio) and the g
 These differences are actually all simplifications to the code, and show how clear it can be to use the Deepgram STS API
 in your applications.
 
+## Try It!
+
+This is currently deployed somewhere in the ether, and can be called via +1(734)371-8307!
+
 ## Pre-requisites
 
 You will need:
@@ -148,6 +152,15 @@ The next code block is:
             async for message in sts_ws:
                 if type(message) is str:
                     print(message)
+                    # handle barge-in
+                    decoded = json.loads(message)
+                    if decoded['type'] == 'UserStartedSpeaking':
+                        clear_message = {
+                            "event": "clear",
+                            "streamSid": streamsid
+                        }
+                        await twilio_ws.send(json.dumps(clear_message))
+
                     continue
 
                 print(type(message))
@@ -164,9 +177,12 @@ The next code block is:
                 await twilio_ws.send(json.dumps(media_message))
 ```
 This `sts_receiver` first waits until it has received a stream sid from Twilio, and then loops over messages
-received from the Deepgram STS API. We ignore any text messages, as we can't send those to Twilio, but any
-other messages should be binary messages containing the text-to-speech (TTS) output of the Deepgram STS API.
-These we pack up into valid Twilio messages (this is where we need that stream sid!), and shoot
+received from the Deepgram STS API. If we receive a text message, we see if it indicated that the user has started
+speaking - if it has, we treat this as barge-in and have Twilio clear the agent audio on the call (we need that
+stream sid for this!).
+
+Other messages should be binary messages containing the text-to-speech (TTS) output of the Deepgram STS API.
+These we pack up into valid Twilio messages (we also need that stream sid here!), and shoot
 them off to Twilio to be played back on the phone for the caller to here. For more information
 about streaming audio to Twilio, see the following:
 
