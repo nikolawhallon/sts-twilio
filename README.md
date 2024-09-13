@@ -118,7 +118,9 @@ The next code block is:
             "agent": {
                 "listen": {"model": "nova-2"},
                 "think": {
-                    "provider": "anthropic",  # examples are anthropic, open_ai, groq, ollama
+                    "provider": {
+                        "type": "anthropic",  # examples are anthropic, open_ai, groq, ollama
+                    },
                     "model": "claude-3-haiku-20240307",  # examples are claude-3-haiku-20240307, gpt-3.5-turbo, mixtral-8x7b-32768, mistral
                     "instructions": "You are a helpful car seller.",
                 },
