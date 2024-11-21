@@ -31,7 +31,6 @@ async def twilio_handler(twilio_ws):
                     "encoding": "mulaw",
                     "sample_rate": 8000,
                     "container": "none",
-                    "buffer_size": 250,
                 },
             },
             "agent": {
